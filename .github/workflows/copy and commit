@@ -1,9 +1,9 @@
-name: Copy File to Another Repository
+name: Copy File on Change
 
 on:
   push:
     paths:
-      - 'local_getting_used_pandas.ipynb'
+      - 'Commitment-for-Getting-used-to-Pandas/local_getting_used_pandas.ipynb'
 
 jobs:
   copy-file:
@@ -18,11 +18,15 @@ jobs:
         git config --local user.email "koak1107@gmail.com"
         git config --local user.name "kyeob1107"
 
-    - name: Copy file to destination repository, Commit and push changes
+    - name: Copy file to destination repository
       run: |
-        cp local_getting_used_pandas.ipynb Getting-used-to-Pandas/
-        ls -la Getting-used-to-Pandas/
-        git -C Getting-used-to-Pandas/ add .
-        git -C Getting-used-to-Pandas/ commit -m "Copy local_getting_used_pandas.ipynb to destination repository"
-        git -C Getting-used-to-Pandas/ push origin main
-      if: success()
+        cp Commitment-for-Getting-used-to-Pandas/local_getting_used_pandas.ipynb $GITHUB_WORKSPACE/
+        ls -la $GITHUB_WORKSPACE/
+
+    - name: Commit and push changes to destination repository
+      run: |
+        git add .
+        git commit -m "Copy local_getting_used_pandas.ipynb to destination repository"
+        git push origin main
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
