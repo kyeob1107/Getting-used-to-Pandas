@@ -2,8 +2,6 @@ name: Copy File Workflow
 
 on:
   push:
-    branches:
-      - main
     paths:
       - 'Commitment-for-Getting-used-to-Pandas/local_getting_used_pandas.ipynb'
 
@@ -16,13 +14,14 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: 'Commitment-for-Getting-used-to-Pandas'
+        ref: ${{ github.event.before }} # or use ${{ github.sha }} if you prefer
 
     - name: Copy File
       run: |
-        # 파일이 변경되었을 때만 실행
-        if [ -n "$(git diff --name-only ${{ github.sha }}^ ${{ github.sha }} | grep 'local_getting_used_pandas.ipynb')" ]; then
-          cp local_getting_used_pandas.ipynb /path/to/Getting-used-to-Pandas
-          git -C /path/to/Getting-used-to-Pandas add local_getting_used_pandas.ipynb
-          git -C /path/to/Getting-used-to-Pandas commit -m "Update local_getting_used_pandas.ipynb"
-          git -C /path/to/Getting-used-to-Pandas push
-        fi
+        today=$(date +"%Y-%m-%d")
+        cp local_getting_used_pandas.ipynb Getting-used-to-Pandas
+        cd Getting-used-to-Pandas
+        git add ${today}.ipynb
+        git commit -m "Update local_getting_used_pandas.ipynb"
+        git push origin main # or use the appropriate branch name
+
