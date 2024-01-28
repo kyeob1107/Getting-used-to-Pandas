@@ -2,6 +2,8 @@ name: Copy File Workflow
 
 on:
   push:
+    branches:
+      - main
     paths:
       - 'Commitment-for-Getting-used-to-Pandas/local_getting_used_pandas.ipynb'
 
@@ -10,16 +12,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
+    - name: Checkout Commitment Repository
       uses: actions/checkout@v2
+      with:
+        repository: 'Commitment-for-Getting-used-to-Pandas'
 
     - name: Copy File
       run: |
         # 파일이 변경되었을 때만 실행
-        today=$(date +"%Y-%m-%d")
-        if [ -n "$(git diff --name-only ${{ github.sha }}^ ${{ github.sha }} | grep 'Commitment-for-Getting-used-to-Pandas/local_getting_used_pandas.ipynb')" ]; then
-          cp Commitment-for-Getting-used-to-Pandas/local_getting_used_pandas.ipynb Getting-used-to-Pandas
-          git -C Getting-used-to-Pandas add ${today}.ipynb
-          git -C Getting-used-to-Pandas commit -m "${today}업데이트"
-          git -C Getting-used-to-Pandas push
+        if [ -n "$(git diff --name-only ${{ github.sha }}^ ${{ github.sha }} | grep 'local_getting_used_pandas.ipynb')" ]; then
+          cp local_getting_used_pandas.ipynb /path/to/Getting-used-to-Pandas
+          git -C /path/to/Getting-used-to-Pandas add local_getting_used_pandas.ipynb
+          git -C /path/to/Getting-used-to-Pandas commit -m "Update local_getting_used_pandas.ipynb"
+          git -C /path/to/Getting-used-to-Pandas push
         fi
